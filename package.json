@@ -1,0 +1,14 @@
+{
+  "name": "restfull-api-node",
+  "version": "1.0.0",
+  "description": "restfull spi create",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "muhammad yousuf",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}

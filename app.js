@@ -1,13 +1,18 @@
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
+const bodyParser = require('body-parser');
+
 const product = require('./api/routes/product');
 const order = require('./api/routes/order');
 
 
-app.use(morgan('dev'))
-app.use('/product', product)
-app.use('/order', order)
+app.use(morgan('dev'));
+app.use(bodyParser.urlencoded({extended:false}));
+app.use(bodyParser.json());
+
+app.use('/product', product);
+app.use('/order', order);
 
 app.use((req, res, next) => {
     const error = new Error('Not Found');

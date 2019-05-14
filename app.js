@@ -2,10 +2,17 @@ const express = require('express');
 const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
-
+const mongoose = require('mongoose'); 
+const dotenv = require('dotenv');
 const product = require('./api/routes/product');
 const order = require('./api/routes/order');
 
+
+dotenv.config({ path: './nodemon.env' });
+
+
+
+mongoose.connect(process.env.MONGOLAB_URI, { useNewUrlParser: true })
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended:false}));

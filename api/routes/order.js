@@ -1,5 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
+
+const Order = require('../models/order');
 
 router.get('/', (req, res, next) => {
     res.status(200).json({
@@ -8,14 +11,25 @@ router.get('/', (req, res, next) => {
 })
 
 router.post('/', (req, res, next) => {
-    const orders = {
-        productId: req.body.productId,
+    const orders = new Order({
+        _id: mongoose.Types.ObjectId(),
+        product: req.body.productId,
         quantity: req.body.quantity
-    };
-    res.status(200).json({
-        message: 'Add Order Suucessfully',
-        orders : orders
+    });
+    orders.save().then(result =>{
+        console.log("Add Order", result);
+        res.status(201).json({
+            message: 'Add Order Suucessfully',
+            orders : result
+        })
+        
+    }).catch(err => {
+        console.log('error', err);
+        res.status(500).json({
+            error:err
+        })
     })
+    
 })
 
 router.get('/:orderId', (req, res, next) => {

@@ -35,7 +35,7 @@ const Product = require('../models/product');
 
 router.get('/', (req, res, next) => {
     Product.find().sort({ name: 1 })
-        .select("name price _id")
+        .select("name price _id productImage")
         .exec()
         .then(docs => {
             console.log("Get all Documents ", docs);
@@ -48,6 +48,7 @@ router.get('/', (req, res, next) => {
                             name: doc.name,
                             price: doc.price,
                             _id: doc._id,
+                            productImage: doc.productImage,
                             request: {
                                 type: 'GET',
                                 url: 'http://localhost:5000/product/' + doc._id
@@ -75,7 +76,8 @@ router.post('/', upload.single('uploadImage'), (req, res, next) => {
     const product = new Product({
         _id: new mongoose.Types.ObjectId(),
         name: req.body.name,
-        price: req.body.price
+        price: req.body.price,
+        productImage:req.file.path
     })
     product.save()
         .then(result => {
@@ -86,6 +88,7 @@ router.post('/', upload.single('uploadImage'), (req, res, next) => {
                     name: result.name,
                     price: result.price,
                     _id: result._id,
+                    productImage: result.productImage,
                     request: {
                         type: 'GET',
                         url: 'http://localhost:5000/product/' + result._id
@@ -101,7 +104,7 @@ router.post('/', upload.single('uploadImage'), (req, res, next) => {
 })
 router.get('/:productId', (req, res, next) => {
     const id = req.params.productId;
-    Product.findById(id).select("name price _id").exec().then(doc => {
+    Product.findById(id).select("name price _id productImage").exec().then(doc => {
         console.log("Form Database", doc);
         if (doc) {
             res.status(200).json({

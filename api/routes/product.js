@@ -122,20 +122,6 @@ router.get('/:productId', (req, res, next) => {
         console.log('error', err);
         res.status(500).json({ error: err })
     })
-
-
-    // console.log(id)
-    // if (id === "special") {
-    //     res.status(200).json({
-    //         message: 'get product by  Special ID',
-    //         id: id
-    //     })
-    // } else {
-    //     res.status(200).json({
-    //         message: 'get product by ID',
-    //     })
-    // }
-
 })
 
 router.patch('/:productId', (req, res, next) => {

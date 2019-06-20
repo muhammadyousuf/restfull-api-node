@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 
+
 router.post('/signup', (req, res, next) => {
     User.find({ email: req.body.email }).exec().then(user => {
         if (user.length >= 1) {
@@ -38,17 +39,6 @@ router.post('/signup', (req, res, next) => {
 
 })
 
-router.get('/list', (req, res, next) => {
-    User.find().exec().then(result => {
-        if (result.length >= 1) {
-            res.status(200).json(result);
-        } else {
-            res.status(404).json({ message: 'No User Account' })
-        }
-    }).catch(err => {
-        res.status(500).json({ error: err })
-    })
-})
 
 router.delete('/delete/:userId', (req, res, next) => {
     let uid = req.params.userId;
@@ -70,6 +60,5 @@ router.delete('/delete/:userId', (req, res, next) => {
             })
         }
     })
-
 })
 module.exports = router;

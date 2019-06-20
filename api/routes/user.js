@@ -38,5 +38,26 @@ router.post('/signup', (req, res, next) => {
 
 })
 
-
+router.delete('/delete/:userId', (req, res, next) => {
+    let uid = req.params.userId;
+    User.find({_id:uid}).exec().then(doc => {
+        console.log(doc.length)
+        if(!doc.length){
+        res.status(404).json({
+            message:"No User Found"
+        })
+        }else{
+            User.deleteOne({ _id: uid }).exec().then(() => {
+                res.status(200).json({
+                    message: 'user deleted Successfully'
+                })
+            }).catch(err => {
+                res.status(500).json({
+                    error: err
+                })
+            })
+        }
+    })
+   
+})
 module.exports = router;

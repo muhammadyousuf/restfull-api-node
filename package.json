@@ -9,10 +9,12 @@
   "author": "muhammad yousuf",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^3.0.6",
     "body-parser": "^1.19.0",
     "dotenv": "^8.0.0",
     "express": "^4.16.4",
     "mongoose": "^5.5.8",
-    "morgan": "^1.9.1"
+    "morgan": "^1.9.1",
+    "multer": "^1.4.1"
   }
 }

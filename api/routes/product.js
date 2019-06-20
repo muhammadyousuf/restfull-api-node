@@ -1,12 +1,41 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const multer = require('multer');
+
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './upload/')
+    },
+    filename: function (req, file, cb) {
+        cb(null, new Date().toISOString() + file.originalname);
+    }
+})
+
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype === 'image/jpg') {
+        cb(null, true);
+    } else {
+        cb(null, false);
+    }
+
+
+}
+
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 1024 * 1024 * 5
+    },
+    fileFilter: fileFilter
+})
 
 const Product = require('../models/product');
 
 router.get('/', (req, res, next) => {
     Product.find().sort({ name: 1 })
-        .select("name price _id")
+        .select("name price _id productImage")
         .exec()
         .then(docs => {
             console.log("Get all Documents ", docs);
@@ -19,6 +48,7 @@ router.get('/', (req, res, next) => {
                             name: doc.name,
                             price: doc.price,
                             _id: doc._id,
+                            productImage: doc.productImage,
                             request: {
                                 type: 'GET',
                                 url: 'http://localhost:5000/product/' + doc._id
@@ -41,12 +71,13 @@ router.get('/', (req, res, next) => {
             });
         })
 })
-router.post('/', (req, res, next) => {
-
+router.post('/', upload.single('uploadImage'), (req, res, next) => {
+    console.log(req.file)
     const product = new Product({
         _id: new mongoose.Types.ObjectId(),
         name: req.body.name,
-        price: req.body.price
+        price: req.body.price,
+        productImage:req.file.path
     })
     product.save()
         .then(result => {
@@ -57,6 +88,7 @@ router.post('/', (req, res, next) => {
                     name: result.name,
                     price: result.price,
                     _id: result._id,
+                    productImage: result.productImage,
                     request: {
                         type: 'GET',
                         url: 'http://localhost:5000/product/' + result._id
@@ -72,7 +104,7 @@ router.post('/', (req, res, next) => {
 })
 router.get('/:productId', (req, res, next) => {
     const id = req.params.productId;
-    Product.findById(id).select("name price _id").exec().then(doc => {
+    Product.findById(id).select("name price _id productImage").exec().then(doc => {
         console.log("Form Database", doc);
         if (doc) {
             res.status(200).json({
@@ -90,20 +122,6 @@ router.get('/:productId', (req, res, next) => {
         console.log('error', err);
         res.status(500).json({ error: err })
     })
-
-
-    // console.log(id)
-    // if (id === "special") {
-    //     res.status(200).json({
-    //         message: 'get product by  Special ID',
-    //         id: id
-    //     })
-    // } else {
-    //     res.status(200).json({
-    //         message: 'get product by ID',
-    //     })
-    // }
-
 })
 
 router.patch('/:productId', (req, res, next) => {

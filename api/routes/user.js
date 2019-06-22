@@ -42,7 +42,22 @@ router.post('/signup', (req, res, next) => {
 router.post('/Login', (req, res, next) => {
     User.find({ email: req.body.email })
         .exec()
-        .then()
+        .then(user => {
+            if(user.length < 1){
+                res.status(401).json({message:"Auth Failed"})
+            }else{
+                bcrypt.compare(req.body.password, user[0].password, (err, result) => {
+                    if(err){
+                        res.status(401).json({message:"Auth Failed"})
+                    }
+                    if(result){
+                        res.status(200).json({message:"Auth Success"})
+                    }else{
+                        res.status(401).json({message:"Auth Failed"})
+                    }
+                })
+            }
+        })
         .catch(err =>
             res.status(500).json({
                 error: err

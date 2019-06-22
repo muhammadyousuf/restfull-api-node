@@ -39,6 +39,15 @@ router.post('/signup', (req, res, next) => {
 
 })
 
+router.post('/Login', (req, res, next) => {
+    User.find({ email: req.body.email })
+        .exec()
+        .then()
+        .catch(err =>
+            res.status(500).json({
+                error: err
+            }))
+})
 
 router.delete('/delete/:userId', (req, res, next) => {
     let uid = req.params.userId;

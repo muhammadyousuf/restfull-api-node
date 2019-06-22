@@ -51,7 +51,7 @@ router.post('/Login', (req, res, next) => {
                         res.status(401).json({message:"Auth Failed"})
                     }
                     if(result){
-                        res.status(200).json({message:"Auth Success"})
+                        res.status(200).json({message:"Auth Successful"})
                     }else{
                         res.status(401).json({message:"Auth Failed"})
                     }

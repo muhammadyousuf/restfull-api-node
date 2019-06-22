@@ -3,8 +3,9 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
-
-
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
+dotenv.config({ path: '../../nodemon.env' });
 router.post('/signup', (req, res, next) => {
     User.find({ email: req.body.email }).exec().then(user => {
         if (user.length >= 1) {
@@ -43,17 +44,28 @@ router.post('/Login', (req, res, next) => {
     User.find({ email: req.body.email })
         .exec()
         .then(user => {
-            if(user.length < 1){
-                res.status(401).json({message:"Auth Failed"})
-            }else{
+            if (user.length < 1) {
+                res.status(401).json({ message: "Auth Failed" })
+            } else {
                 bcrypt.compare(req.body.password, user[0].password, (err, result) => {
-                    if(err){
-                        res.status(401).json({message:"Auth Failed"})
+                    if (err) {
+                        res.status(401).json({ message: "Auth Failed" })
                     }
-                    if(result){
-                        res.status(200).json({message:"Auth Successful"})
-                    }else{
-                        res.status(401).json({message:"Auth Failed"})
+                    if (result) {
+                        const token = jwt.sign(
+                            {
+                                email: user[0].email,
+                                userId: user[0]._id
+                            },
+                            process.env.JWT_KEY,
+                            {
+                                expiresIn: '1d'
+                            }
+
+                        )
+                        res.status(200).json({ message: "Auth Successful", token })
+                    } else {
+                        res.status(401).json({ message: "Auth Failed" })
                     }
                 })
             }

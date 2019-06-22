@@ -2,14 +2,17 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const multer = require('multer');
-
+const checkAuth = require('../middleware/check-auth');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, './upload/')
+        cb(null, 'image/')
     },
     filename: function (req, file, cb) {
-        cb(null, new Date().toISOString() + file.originalname);
+        var now = new Date().toISOString();
+        now = now.replace(/:/g, "-");
+        
+        cb(null, now +  file.originalname.toString());
     }
 })
 
@@ -71,7 +74,7 @@ router.get('/', (req, res, next) => {
             });
         })
 })
-router.post('/', upload.single('uploadImage'), (req, res, next) => {
+router.post('/',upload.single('productImage'),  (req, res, next) => {
     console.log(req.file)
     const product = new Product({
         _id: new mongoose.Types.ObjectId(),

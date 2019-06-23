@@ -6,39 +6,10 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config({ path: '../../nodemon.env' });
-router.post('/signup', (req, res, next) => {
-    User.find({ email: req.body.email }).exec().then(user => {
-        if (user.length >= 1) {
-            res.status(409).json({
-                message: 'email is already exsists'
-            })
-        } else {
-            bcrypt.hash(req.body.password, 10, (err, hash) => {
-                if (err) {
-                    res.status(500).json({ error: err })
-                } else {
-                    const user = new User({
-                        _id: new mongoose.Types.ObjectId(),
-                        email: req.body.email,
-                        password: hash
-                    })
-                    user.save().then(result => {
-                        console.log(result);
-                        res.status(201).json({
-                            message: 'user created'
-                        })
-                    }).catch(err => {
-                        res.status(500).json({
-                            error: err
-                        })
-                    })
-                }
-            })
 
-        }
-    })
+const User_Controller = require('../controller/user')
 
-})
+router.post('/signup', User_Controller.create_user)
 
 router.post('/Login', (req, res, next) => {
     User.find({ email: req.body.email })

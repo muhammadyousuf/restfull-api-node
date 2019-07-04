@@ -9,6 +9,7 @@ const order = require('./api/routes/order');
 const user = require('./api/routes/user');
 
 
+
 dotenv.config({ path: './nodemon.env' });
 
 
@@ -19,7 +20,8 @@ mongoose.Promise = global.Promise;
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use('/upload', express.static('upload'));
+app.use(express.static(__dirname));
+app.use('/image', express.static('image'));
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header(

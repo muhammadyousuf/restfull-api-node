@@ -21,7 +21,6 @@
 .env.production.local
 
 node_modules/
-nodemon.env
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
